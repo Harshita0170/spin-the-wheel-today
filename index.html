@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spin the Wheel - Motivational Roulette 2025</title>
+  <title>Motivate Yourself Everyday</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
     body { 
@@ -11,7 +11,7 @@
       margin: 0; 
       padding: 0; 
       background: #f5f6f5; 
-      color: #333333; 
+      color: #1e1e1e; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
@@ -25,25 +25,54 @@
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
       width: 90%; 
       max-width: 600px; 
-      border: 2px solid #a3bffa; 
+      border: 2px solid #a2248f; 
       text-align: center; 
       position: relative; 
     }
     h2 { 
       font-weight: 700; 
-      color: #a3bffa; 
+      color: #1e1e1e; 
       text-transform: uppercase; 
       letter-spacing: 2px; 
+      margin-bottom: 10px; 
+    }
+    #subtitle { 
+      font-weight: 400; 
+      color: #1e1e1e; 
       margin-bottom: 20px; 
     }
+    #calendarGrid { 
+      display: grid; 
+      grid-template-columns: repeat(5, 1fr); 
+      gap: 10px; 
+      margin: 20px 0; 
+    }
+    .calendar-tile { 
+      background: #d3d3d3; 
+      color: #1e1e1e; 
+      padding: 15px; 
+      border-radius: 5px; 
+      border: 1px solid #b0b0b0; 
+      cursor: pointer; 
+      font-weight: 700; 
+      transition: background 0.3s; 
+      aspect-ratio: 1 / 1; 
+    }
+    .calendar-tile:hover { 
+      background: #f7a51d; 
+    }
+    .calendar-tile.today { 
+      background: #ffdc00; 
+      border: 2px solid #a2248f; 
+    }
     #wheelCanvas { 
-      border: 3px solid #a3bffa; 
+      border: 3px solid #a2248f; 
       border-radius: 50%; 
       margin: 0 auto; 
-      display: block; 
+      display: none; 
     }
     button { 
-      background: #d4a4eb; 
+      background: #cf90c0; 
       color: #ffffff; 
       padding: 12px 25px; 
       border: none; 
@@ -54,8 +83,12 @@
       transition: background 0.2s; 
       margin: 10px 5px; 
     }
-    button:hover { 
-      background: #c48de3; 
+    button:disabled { 
+      background: #cccccc; 
+      cursor: not-allowed; 
+    }
+    button:hover:not(:disabled) { 
+      background: #f7a51d; 
     }
     #quotePopup { 
       display: none; 
@@ -66,31 +99,27 @@
       background: rgba(255, 255, 255, 0.95); 
       padding: 20px; 
       border-radius: 10px; 
-      border: 2px solid #a3bffa; 
+      border: 2px solid #a2248f; 
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); 
       z-index: 1000; 
       width: 80%; 
       max-width: 400px; 
       text-align: center; 
+      opacity: 0; 
+      scale: 0.8; 
     }
     #quotePopup p { 
       margin: 5px 0; 
       font-style: italic; 
       font-weight: 400; 
+      color: #1e1e1e; 
     }
     #quotePopup .author { 
       font-weight: 700; 
-      color: #a9dfbf; 
-    }
-    #quotePopup .share { 
-      font-weight: 400; 
-      color: #666666; 
-      font-style: italic; 
-      margin-top: 10px; 
-      font-size: 0.9em; 
+      color: #005bab; 
     }
     #closePopup { 
-      background: #d4a4eb; 
+      background: #cf90c0; 
       color: #ffffff; 
       padding: 8px 15px; 
       border: none; 
@@ -100,23 +129,47 @@
       margin-top: 10px; 
     }
     #closePopup:hover { 
-      background: #c48de3; 
+      background: #f7a51d; 
+    }
+    #streakDisplay, #spinCount { 
+      font-weight: 400; 
+      color: #a2248f; 
+      margin: 10px 0; 
+    }
+    #dailySpins { 
+      font-weight: 400; 
+      color: #005bab; 
+      margin: 10px 0; 
+    }
+    #nextDayMessage { 
+      font-weight: 400; 
+      color: #a2248f; 
+      margin-top: 10px; 
+      display: none; 
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Spin the Wheel - Motivational Roulette 2025</h2>
-    <p style="text-align: center; color: #666666;"><em>Powered by Grok - Spin to reveal your quote of the day!</em></p>
-
+    <h2>Motivate Yourself Everyday.</h2>
+    <p id="subtitle">Click the day and see your motivational quote of the day.</p>
+    <div id="calendarGrid">
+      <div class="calendar-tile">1</div><div class="calendar-tile">2</div><div class="calendar-tile">3</div><div class="calendar-tile">4</div><div class="calendar-tile">5</div>
+      <div class="calendar-tile">6</div><div class="calendar-tile">7</div><div class="calendar-tile">8</div><div class="calendar-tile">9</div><div class="calendar-tile">10</div>
+      <div class="calendar-tile">11</div><div class="calendar-tile">12</div><div class="calendar-tile">13</div><div class="calendar-tile">14</div><div class="calendar-tile">15</div>
+      <div class="calendar-tile">16</div><div class="calendar-tile">17</div><div class="calendar-tile">18</div><div class="calendar-tile">19</div><div class="calendar-tile">20</div>
+      <div class="calendar-tile">21</div><div class="calendar-tile">22</div><div class="calendar-tile">23</div><div class="calendar-tile">24</div><div class="calendar-tile">25</div>
+    </div>
+    <div id="streakDisplay">Spin daily to keep your streak!</div>
+    <div id="spinCount">Spin to earn rewards!</div>
+    <div id="dailySpins">Daily Spins Left: 3</div>
     <canvas id="wheelCanvas" width="400" height="400"></canvas>
-    <button onclick="spinWheel()">Spin the Wheel!</button>
+    <button id="spinButton" onclick="spinWheel()">Spin the Wheel!</button>
+    <div id="nextDayMessage">Come back tomorrow, June 05, 2025, for more spins and a special reward! 🎉</div>
 
     <div id="quotePopup">
       <p id="quoteText">Your quote will appear here...</p>
       <p id="quoteAuthor" class="author"></p>
-      <p id="shareLink" class="share">Share your quote! #MotivationalRoulette #Inspiration2025</p>
-      <button id="captureScreenshot" onclick="captureScreenshot()">Capture Screenshot</button>
       <button id="closePopup" onclick="closePopup()">Close</button>
     </div>
   </div>
@@ -126,26 +179,111 @@
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     const segments = 12; // 12 numbers
-    const colors = ['#a3bffa', '#d4a4eb', '#a9dfbf', '#f0f2f0']; // Grok-inspired colors
+    const colors = ['#005bab', '#639ad1', '#f07023', '#f7a51d', '#c8262c', '#e8a19e', '#cf90c0', '#a2248f', '#fff484', '#ffdc00', '#7ec99d']; // Updated wheel colors
     let wheelAngle = 0;
     let arrowAngle = 0;
     let spinning = false;
 
-    // Motivational quotes tied to numbers 1-12
+    // Motivational quotes array
     const quotes = [
-      { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-      { quote: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
-      { quote: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
-      { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-      { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-      { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
-      { quote: "Your limitation—it's only your imagination.", author: "Unknown" },
-      { quote: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
-      { quote: "Great things never come from comfort zones.", author: "Unknown" },
-      { quote: "Dream it. Wish it. Do it.", author: "Unknown" },
-      { quote: "Success doesn’t come from what you do occasionally, but from what you do consistently.", author: "Marie Forleo" },
-      { quote: "The harder you work for something, the greater you’ll feel when you achieve it.", author: "Unknown" }
+      { quote: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+      { quote: "Don’t wait for motivation. Create a routine and the motivation will follow.", author: "Unknown" },
+      { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+      { quote: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
+      { quote: "You don’t need to see the whole staircase, just take the first step.", author: "Martin Luther King Jr." },
+      { quote: "Action cures fear. Inaction strengthens it.", author: "David Schwartz" },
+      { quote: "Small progress is still progress. Keep going.", author: "Unknown" },
+      { quote: "The only way out is through.", author: "Robert Frost" },
+      { quote: "Don’t count the days; make the days count.", author: "Muhammad Ali" },
+      { quote: "Done is better than perfect.", author: "Sheryl Sandberg" },
+      { quote: "You become what you repeatedly do.", author: "James Clear" },
+      { quote: "What you focus on grows. Focus on progress.", author: "Unknown" },
+      { quote: "Success is the sum of small efforts repeated day in and day out.", author: "Robert Collier" },
+      { quote: "Show up every day, even when it’s hard.", author: "Unknown" },
+      { quote: "Energy flows where attention goes.", author: "Unknown" },
+      { quote: "It’s not about intensity. It’s about consistency.", author: "Unknown" },
+      { quote: "Eliminate distractions. Your future depends on it.", author: "Unknown" },
+      { quote: "The secret of your future is hidden in your daily routine.", author: "Mike Murdock" },
+      { quote: "Stay focused. Stay humble. Stay hungry.", author: "Unknown" },
+      { quote: "Build habits. Don’t chase hype.", author: "Unknown" },
+      { quote: "If it takes less than two minutes, do it now.", author: "David Allen" },
+      { quote: "A year from now, you’ll wish you started today.", author: "Karen Lamb" },
+      { quote: "Work smarter, not just harder.", author: "Unknown" },
+      { quote: "Every hour you waste is a decision to stay the same.", author: "Unknown" },
+      { quote: "Don’t prioritize what’s on your schedule. Schedule your priorities.", author: "Stephen Covey" },
+      { quote: "You have exactly one life. Use it wisely.", author: "Unknown" },
+      { quote: "Kill procrastination with action.", author: "Unknown" },
+      { quote: "Create before you consume.", author: "Unknown" },
+      { quote: "Each day is a new chance to get 1% better.", author: "James Clear" },
+      { quote: "Protect your time like your life depends on it—because it does.", author: "Unknown" },
+      { quote: "The expert in anything was once a beginner.", author: "Unknown" },
+      { quote: "Learn something new every day—even if it’s small.", author: "Unknown" },
+      { quote: "Fail fast. Learn faster.", author: "Unknown" },
+      { quote: "Ask questions. Stay curious. Never stop learning.", author: "Unknown" },
+      { quote: "Your comfort zone is your enemy.", author: "Unknown" },
+      { quote: "Every mistake is a lesson. Use it.", author: "Unknown" },
+      { quote: "Growth begins at the end of your excuses.", author: "Unknown" },
+      { quote: "Be coachable. You’re not always right.", author: "Unknown" },
+      { quote: "Invest in yourself. You’re your greatest asset.", author: "Unknown" },
+      { quote: "Read 10 pages a day. It adds up.", author: "Unknown" },
+      { quote: "Do it scared.", author: "Unknown" },
+      { quote: "If it scares you, it might be a good thing to try.", author: "Seth Godin" },
+      { quote: "You miss 100% of the shots you don’t take.", author: "Wayne Gretzky" },
+      { quote: "Speak up. Your voice matters.", author: "Unknown" },
+      { quote: "Don’t let fear stop you from doing what needs to be done.", author: "Unknown" },
+      { quote: "Be bold. Fortune favors the brave.", author: "Latin Proverb" },
+      { quote: "Take messy action. You can refine later.", author: "Unknown" },
+      { quote: "Success favors those who start before they’re ready.", author: "Unknown" },
+      { quote: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+      { quote: "Act now. Perfect later.", author: "Unknown" }
     ];
+
+    // Bonus and special rewards
+    const bonusQuote = { quote: "Keep spinning—you’re unstoppable!", author: "Grok" };
+    const specialQuote = { quote: "🎉 You’ve mastered today’s spins—shine on! 🎉", author: "Grok" };
+
+    // LocalStorage for streak, spin count, and daily spins
+    const today = new Date('June 04, 2025').toISOString().split('T')[0];
+    let streak = parseInt(localStorage.getItem('streak')) || 0;
+    let lastSpinDate = localStorage.getItem('lastSpinDate');
+    let spinCount = parseInt(localStorage.getItem('spinCount')) || 0;
+    let dailySpins = parseInt(localStorage.getItem('dailySpins')) || 3;
+
+    // Initialize streak, spin count, and daily spins display
+    if (lastSpinDate !== today) {
+      if (lastSpinDate === new Date(Date.now() - 86400000).toISOString().split('T')[0]) {
+        streak++;
+      } else {
+        streak = 1;
+      }
+      dailySpins = 3; // Reset daily spins
+    }
+    document.getElementById('streakDisplay').textContent = `Streak: Day ${streak} 🔥`;
+    document.getElementById('spinCount').textContent = `Total Spins: ${spinCount} (Bonus at ${spinCount % 5 === 0 ? 5 : 5 - (spinCount % 5)} more spins!)`;
+    document.getElementById('dailySpins').textContent = `Daily Spins Left: ${dailySpins}`;
+    if (dailySpins === 0) {
+      document.getElementById('spinButton').disabled = true;
+      document.getElementById('nextDayMessage').style.display = 'block';
+    }
+
+    // Calendar setup
+    const calendarGrid = document.getElementById('calendarGrid');
+    calendarGrid.querySelectorAll('.calendar-tile').forEach(tile => {
+      if (parseInt(tile.textContent) === 4) { // Today is June 04
+        tile.classList.add('today');
+        tile.addEventListener('click', () => {
+          calendarGrid.style.display = 'none';
+          canvas.style.display = 'block';
+          document.getElementById('spinButton').style.display = 'block';
+          document.getElementById('streakDisplay').style.display = 'none';
+          document.getElementById('spinCount').style.display = 'none';
+          document.getElementById('dailySpins').style.display = 'none';
+          document.getElementById('nextDayMessage').style.display = 'none';
+        });
+      } else {
+        tile.addEventListener('click', () => alert('Please click on today\'s date, June 04!'));
+      }
+    });
 
     function drawWheel() {
       const centerX = canvas.width / 2;
@@ -168,7 +306,7 @@
         ctx.closePath();
         ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
-        ctx.strokeStyle = '#333333';
+        ctx.strokeStyle = '#1e1e1e';
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -176,7 +314,7 @@
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(startAngle + anglePerSegment / 2);
-        ctx.fillStyle = '#333333';
+        ctx.fillStyle = '#1e1e1e';
         ctx.font = 'bold 20px Poppins';
         ctx.textAlign = 'center';
         ctx.fillText(i + 1, radius * 0.7, 0);
@@ -194,15 +332,26 @@
       ctx.lineTo(centerX + radius + 10, centerY);
       ctx.lineTo(centerX + radius - 20, centerY + 10);
       ctx.closePath();
-      ctx.fillStyle = '#d4a4eb';
+      ctx.fillStyle = '#a2248f';
       ctx.fill();
       ctx.stroke();
       ctx.restore();
     }
 
     function spinWheel() {
-      if (spinning) return;
+      if (spinning || dailySpins <= 0) return;
+
       spinning = true;
+      dailySpins--;
+      localStorage.setItem('dailySpins', dailySpins);
+      spinCount++;
+      localStorage.setItem('spinCount', spinCount);
+      localStorage.setItem('lastSpinDate', today);
+      document.getElementById('dailySpins').textContent = `Daily Spins Left: ${dailySpins}`;
+      if (dailySpins === 0) {
+        document.getElementById('spinButton').disabled = true;
+        document.getElementById('nextDayMessage').style.display = 'block';
+      }
 
       // Random spins for wheel and arrow
       const wheelSpins = Math.floor(Math.random() * 5 + 5); // 5-10 spins for wheel
@@ -247,40 +396,58 @@
       const anglePerSegment = 360 / segments;
       const finalAngle = totalDegrees % 360;
       const segmentIndex = Math.floor(finalAngle / anglePerSegment);
-      const number = 12 - segmentIndex; // Adjust for clockwise numbering
-      const adjustedNumber = number === 0 ? 12 : number;
 
-      // Incorporate date (June 04, 2025) for daily consistency
-      const date = new Date('June 04, 2025');
-      const dayOfMonth = date.getDate(); // 4
-      const quoteIndex = (adjustedNumber + dayOfMonth) % segments || segments - 1; // Combine number and day
+      // Randomly select a quote
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      let quote = quotes[randomIndex];
 
-      const quote = quotes[quoteIndex];
-      document.getElementById('quoteText').textContent = `"${quote.quote}"`;
+      // Progressive rewards based on daily spins left
+      if (dailySpins === 0) {
+        quote = specialQuote;
+        document.getElementById('quoteText').textContent = `🎉 "${quote.quote}"`;
+      } else if (spinCount % 5 === 0) {
+        quote = bonusQuote;
+        document.getElementById('quoteText').textContent = `🎉 "${quote.quote}"`;
+      } else {
+        document.getElementById('quoteText').textContent = `"${quote.quote}"`;
+      }
       document.getElementById('quoteAuthor').textContent = `- ${quote.author}`;
 
-      // Shareable link with snapshot instruction and GitHub link
-      const shareText = encodeURIComponent(`My motivational quote of the day: "${quote.quote}" - ${quote.author} [Take a screenshot of the wheel to share!] Check it out: https://github.com/yourusername/motivational-roulette #MotivationalRoulette #Inspiration2025`);
-      document.getElementById('shareLink').innerHTML = `Share your quote! <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank">Tweet it!</a>`;
-
-      // Show the pop-up
+      // Show the pop-up with animation
       const popup = document.getElementById('quotePopup');
       if (popup) {
         console.log('Showing pop-up'); // Debug log
         popup.style.display = 'block';
+        gsap.to(popup, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: 'back.out(1.7)'
+        });
       } else {
         console.error('Pop-up element not found'); // Debug log
       }
     }
 
-    function captureScreenshot() {
-      alert('To share a snapshot:\n1. Right-click the wheel and select "Save Image As..." or use your browser\'s screenshot tool (e.g., Ctrl+Shift+S on Chrome).\n2. Attach the image to your tweet with the share link.');
-    }
-
     function closePopup() {
       const popup = document.getElementById('quotePopup');
       if (popup) {
-        popup.style.display = 'none';
+        gsap.to(popup, {
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.3,
+          ease: 'back.in(1.7)',
+          onComplete: () => {
+            popup.style.display = 'none';
+            canvas.style.display = 'none';
+            document.getElementById('spinButton').style.display = 'none';
+            document.getElementById('calendarGrid').style.display = 'grid';
+            document.getElementById('streakDisplay').style.display = 'block';
+            document.getElementById('spinCount').style.display = 'block';
+            document.getElementById('dailySpins').style.display = 'block';
+            if (dailySpins === 0) document.getElementById('nextDayMessage').style.display = 'block';
+          }
+        });
       }
     }
 
