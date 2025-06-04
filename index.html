@@ -52,7 +52,7 @@
       font-weight: 700; 
       text-transform: uppercase; 
       transition: background 0.2s; 
-      margin: 20px 0; 
+      margin: 10px 5px; 
     }
     button:hover { 
       background: #c48de3; 
@@ -116,6 +116,7 @@
       <p id="quoteText">Your quote will appear here...</p>
       <p id="quoteAuthor" class="author"></p>
       <p id="shareLink" class="share">Share your quote! #MotivationalRoulette #Inspiration2025</p>
+      <button id="captureScreenshot" onclick="captureScreenshot()">Capture Screenshot</button>
       <button id="closePopup" onclick="closePopup()">Close</button>
     </div>
   </div>
@@ -242,6 +243,7 @@
     }
 
     function revealQuote(totalDegrees) {
+      console.log('revealQuote called with totalDegrees:', totalDegrees); // Debug log
       const anglePerSegment = 360 / segments;
       const finalAngle = totalDegrees % 360;
       const segmentIndex = Math.floor(finalAngle / anglePerSegment);
@@ -257,16 +259,29 @@
       document.getElementById('quoteText').textContent = `"${quote.quote}"`;
       document.getElementById('quoteAuthor').textContent = `- ${quote.author}`;
 
-      // Shareable link
-      const shareText = encodeURIComponent(`My motivational quote of the day: "${quote.quote}" - ${quote.author} #MotivationalRoulette #Inspiration2025`);
+      // Shareable link with snapshot instruction and GitHub link
+      const shareText = encodeURIComponent(`My motivational quote of the day: "${quote.quote}" - ${quote.author} [Take a screenshot of the wheel to share!] Check it out: https://github.com/yourusername/motivational-roulette #MotivationalRoulette #Inspiration2025`);
       document.getElementById('shareLink').innerHTML = `Share your quote! <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank">Tweet it!</a>`;
 
       // Show the pop-up
-      document.getElementById('quotePopup').style.display = 'block';
+      const popup = document.getElementById('quotePopup');
+      if (popup) {
+        console.log('Showing pop-up'); // Debug log
+        popup.style.display = 'block';
+      } else {
+        console.error('Pop-up element not found'); // Debug log
+      }
+    }
+
+    function captureScreenshot() {
+      alert('To share a snapshot:\n1. Right-click the wheel and select "Save Image As..." or use your browser\'s screenshot tool (e.g., Ctrl+Shift+S on Chrome).\n2. Attach the image to your tweet with the share link.');
     }
 
     function closePopup() {
-      document.getElementById('quotePopup').style.display = 'none';
+      const popup = document.getElementById('quotePopup');
+      if (popup) {
+        popup.style.display = 'none';
+      }
     }
 
     // Initial draw
