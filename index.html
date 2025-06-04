@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin the Wheel - Motivational Roulette 2025</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background: #f5f6f5; 
+      color: #333333; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      flex-direction: column; 
+      min-height: 100vh; 
+    }
+    .container { 
+      background: #ffffff; 
+      padding: 30px; 
+      border-radius: 15px; 
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
+      width: 90%; 
+      max-width: 600px; 
+      border: 2px solid #a3bffa; 
+      text-align: center; 
+      position: relative; 
+    }
+    h2 { 
+      font-weight: 700; 
+      color: #a3bffa; 
+      text-transform: uppercase; 
+      letter-spacing: 2px; 
+      margin-bottom: 20px; 
+    }
+    #wheelCanvas { 
+      border: 3px solid #a3bffa; 
+      border-radius: 50%; 
+      margin: 0 auto; 
+      display: block; 
+    }
+    button { 
+      background: #d4a4eb; 
+      color: #ffffff; 
+      padding: 12px 25px; 
+      border: none; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      transition: background 0.2s; 
+      margin: 20px 0; 
+    }
+    button:hover { 
+      background: #c48de3; 
+    }
+    #quotePopup { 
+      display: none; 
+      position: absolute; 
+      top: 50%; 
+      left: 50%; 
+      transform: translate(-50%, -50%); 
+      background: rgba(255, 255, 255, 0.95); 
+      padding: 20px; 
+      border-radius: 10px; 
+      border: 2px solid #a3bffa; 
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); 
+      z-index: 1000; 
+      width: 80%; 
+      max-width: 400px; 
+      text-align: center; 
+    }
+    #quotePopup p { 
+      margin: 5px 0; 
+      font-style: italic; 
+      font-weight: 400; 
+    }
+    #quotePopup .author { 
+      font-weight: 700; 
+      color: #a9dfbf; 
+    }
+    #quotePopup .share { 
+      font-weight: 400; 
+      color: #666666; 
+      font-style: italic; 
+      margin-top: 10px; 
+      font-size: 0.9em; 
+    }
+    #closePopup { 
+      background: #d4a4eb; 
+      color: #ffffff; 
+      padding: 8px 15px; 
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      margin-top: 10px; 
+    }
+    #closePopup:hover { 
+      background: #c48de3; 
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Spin the Wheel - Motivational Roulette 2025</h2>
+    <p style="text-align: center; color: #666666;"><em>Powered by Grok - Spin to reveal your quote of the day!</em></p>
+
+    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+    <button onclick="spinWheel()">Spin the Wheel!</button>
+
+    <div id="quotePopup">
+      <p id="quoteText">Your quote will appear here...</p>
+      <p id="quoteAuthor" class="author"></p>
+      <p id="shareLink" class="share">Share your quote! #MotivationalRoulette #Inspiration2025</p>
+      <button id="closePopup" onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script>
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const segments = 12; // 12 numbers
+    const colors = ['#a3bffa', '#d4a4eb', '#a9dfbf', '#f0f2f0']; // Grok-inspired colors
+    let wheelAngle = 0;
+    let arrowAngle = 0;
+    let spinning = false;
+
+    // Motivational quotes tied to numbers 1-12
+    const quotes = [
+      { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+      { quote: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+      { quote: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+      { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+      { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+      { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+      { quote: "Your limitation—it's only your imagination.", author: "Unknown" },
+      { quote: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
+      { quote: "Great things never come from comfort zones.", author: "Unknown" },
+      { quote: "Dream it. Wish it. Do it.", author: "Unknown" },
+      { quote: "Success doesn’t come from what you do occasionally, but from what you do consistently.", author: "Marie Forleo" },
+      { quote: "The harder you work for something, the greater you’ll feel when you achieve it.", author: "Unknown" }
+    ];
+
+    function drawWheel() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = canvas.width / 2 - 10;
+      const anglePerSegment = (2 * Math.PI) / segments;
+
+      // Draw the wheel
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate((wheelAngle * Math.PI) / 180);
+      ctx.translate(-centerX, -centerY);
+
+      for (let i = 0; i < segments; i++) {
+        const startAngle = i * anglePerSegment;
+        const endAngle = (i + 1) * anglePerSegment;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        ctx.strokeStyle = '#333333';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Add number
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(startAngle + anglePerSegment / 2);
+        ctx.fillStyle = '#333333';
+        ctx.font = 'bold 20px Poppins';
+        ctx.textAlign = 'center';
+        ctx.fillText(i + 1, radius * 0.7, 0);
+        ctx.restore();
+      }
+      ctx.restore();
+
+      // Draw the arrow independently
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate((arrowAngle * Math.PI) / 180);
+      ctx.translate(-centerX, -centerY);
+      ctx.beginPath();
+      ctx.moveTo(centerX + radius - 20, centerY - 10);
+      ctx.lineTo(centerX + radius + 10, centerY);
+      ctx.lineTo(centerX + radius - 20, centerY + 10);
+      ctx.closePath();
+      ctx.fillStyle = '#d4a4eb';
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function spinWheel() {
+      if (spinning) return;
+      spinning = true;
+
+      // Random spins for wheel and arrow
+      const wheelSpins = Math.floor(Math.random() * 5 + 5); // 5-10 spins for wheel
+      const arrowSpins = Math.floor(Math.random() * 4 + 3); // 3-7 spins for arrow
+      const wheelExtraDegrees = Math.random() * 360;
+      const arrowExtraDegrees = Math.random() * 360;
+      const wheelTotalDegrees = wheelSpins * 360 + wheelExtraDegrees;
+      const arrowTotalDegrees = arrowSpins * 360 + arrowExtraDegrees;
+
+      // Spin wheel and arrow simultaneously
+      const wheelTimeline = gsap.timeline();
+      wheelTimeline.to({ angle: wheelAngle }, {
+        angle: wheelAngle + wheelTotalDegrees,
+        duration: 5,
+        ease: 'power3.out',
+        onUpdate: function() {
+          wheelAngle = this.targets()[0].angle;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawWheel();
+        }
+      });
+
+      const arrowTimeline = gsap.timeline();
+      arrowTimeline.to({ angle: arrowAngle }, {
+        angle: arrowAngle + arrowTotalDegrees,
+        duration: 7.5, // Longer duration for arrow to stagger stop
+        ease: 'power3.out',
+        onUpdate: function() {
+          arrowAngle = this.targets()[0].angle;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawWheel();
+        },
+        onComplete: function() {
+          spinning = false;
+          revealQuote(arrowTotalDegrees);
+        }
+      });
+    }
+
+    function revealQuote(totalDegrees) {
+      const anglePerSegment = 360 / segments;
+      const finalAngle = totalDegrees % 360;
+      const segmentIndex = Math.floor(finalAngle / anglePerSegment);
+      const number = 12 - segmentIndex; // Adjust for clockwise numbering
+      const adjustedNumber = number === 0 ? 12 : number;
+
+      // Incorporate date (June 04, 2025) for daily consistency
+      const date = new Date('June 04, 2025');
+      const dayOfMonth = date.getDate(); // 4
+      const quoteIndex = (adjustedNumber + dayOfMonth) % segments || segments - 1; // Combine number and day
+
+      const quote = quotes[quoteIndex];
+      document.getElementById('quoteText').textContent = `"${quote.quote}"`;
+      document.getElementById('quoteAuthor').textContent = `- ${quote.author}`;
+
+      // Shareable link
+      const shareText = encodeURIComponent(`My motivational quote of the day: "${quote.quote}" - ${quote.author} #MotivationalRoulette #Inspiration2025`);
+      document.getElementById('shareLink').innerHTML = `Share your quote! <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank">Tweet it!</a>`;
+
+      // Show the pop-up
+      document.getElementById('quotePopup').style.display = 'block';
+    }
+
+    function closePopup() {
+      document.getElementById('quotePopup').style.display = 'none';
+    }
+
+    // Initial draw
+    drawWheel();
+  </script>
+</body>
+</html>
